@@ -64,7 +64,7 @@ export default function HomeScreen() {
   useEffect(() => {
     let socket;
     if (isLoggedIn && username) {
-      socket = io('http://10.0.2.2:3001', {
+      socket = io('https://fine-olives-relax.loca.lt', {
         transports: ['websocket'],
       });
 
