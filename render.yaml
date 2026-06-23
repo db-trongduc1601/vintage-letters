@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: vintage-letters-api
+    env: node
+    buildCommand: "npm install && cd apps/api && npx prisma generate"
+    startCommand: "cd apps/api && node server.js"
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_oL3GjDcCx9Or@ep-steep-mountain-ao8vlrea.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+      - key: PORT
+        value: 3000
