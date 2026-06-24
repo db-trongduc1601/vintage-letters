@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Dimensions, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Dimensions, Alert, ImageBackground, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import { GestureHandlerRootView, GestureDetector, Gesture } from 'react-native-gesture-handler';
@@ -64,7 +64,7 @@ export default function HomeScreen() {
   useEffect(() => {
     let socket;
     if (isLoggedIn && username) {
-      socket = io('https://fine-olives-relax.loca.lt', {
+      socket = io('http://localhost:3001', {
         transports: ['websocket'],
       });
 
@@ -258,81 +258,101 @@ export default function HomeScreen() {
 
   if (!isLoggedIn) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loginContainer}>
+      <View style={styles.container}>
+        <View style={[styles.loginContainer, styles.loginPaper]}>
           <Text style={styles.title}>Vintage Letters</Text>
           <TextInput
             style={styles.input}
             placeholder="Username của bạn"
+            placeholderTextColor="#888"
             value={username}
             onChangeText={setUsername}
           />
           <TextInput
             style={styles.input}
             placeholder="12 từ khôi phục (nếu đăng nhập máy mới)"
+            placeholderTextColor="#888"
             value={mnemonic}
             onChangeText={setMnemonic}
             multiline
           />
           <View style={{ marginBottom: 10 }}>
-            <Button title="Đăng nhập (bằng Mnemonic)" onPress={handleLogin} />
+            <TouchableOpacity style={styles.vintageButton} onPress={handleLogin}>
+              <Text style={styles.vintageButtonText}>Đăng nhập</Text>
+            </TouchableOpacity>
           </View>
-          <Button title="Đăng ký mới" onPress={handleRegister} color="#8D6E63" />
+          <TouchableOpacity style={styles.vintageButtonOutline} onPress={handleRegister}>
+            <Text style={styles.vintageButtonOutlineText}>Đăng ký mới</Text>
+          </TouchableOpacity>
         </View>
-      </SafeAreaView>
+        <View pointerEvents="none" style={styles.noiseOverlay}>
+          <Image source={require('../../assets/images/noise.png')} style={styles.noiseImage} />
+        </View>
+      </View>
     );
   }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Viết Thư</Text>
-          <Text>Gửi từ: {username}</Text>
-        </View>
-
-        <Animated.View style={[styles.letterContainer, animatedLetterStyle]}>
-          <TextInput
-            style={styles.input}
-            placeholder="Gửi tới (ID hoặc Username)"
-            value={receiver}
-            onChangeText={setReceiver}
-          />
-
-          <TextInput
-            style={styles.letterInput}
-            placeholder="Nội dung thư..."
-            multiline
-            value={letterContent}
-            onChangeText={setLetterContent}
-            textAlignVertical="top"
-          />
-
-          <View style={styles.stampContainer}>
-            {stampImage ? (
-              <GestureDetector gesture={panGesture}>
-                <Animated.Image 
-                  source={{ uri: stampImage }} 
-                  style={[styles.stampImage, animatedStampStyle]} 
-                />
-              </GestureDetector>
-            ) : (
-              <View style={styles.stampPlaceholder}>
-                <Text style={styles.stampText}>Chưa có tem</Text>
-              </View>
-            )}
-            <Button title="Chọn tem" onPress={pickImage} />
+      <View style={styles.container}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Viết Thư</Text>
+            <Text style={styles.subtitle}>Gửi từ: {username}</Text>
           </View>
-        </Animated.View>
 
-        <View style={styles.actionContainer}>
-          <Button title="Gửi thư" onPress={handleSend} color="#4CAF50" />
+          <Animated.View style={[styles.letterContainer, animatedLetterStyle]}>
+            <TextInput
+              style={styles.inputHeader}
+              placeholder="Gửi tới (ID hoặc Username)"
+              placeholderTextColor="#888"
+              value={receiver}
+              onChangeText={setReceiver}
+            />
+
+            <View style={styles.paperBody}>
+              <TextInput
+                style={styles.letterInput}
+                placeholder="Nội dung thư..."
+                placeholderTextColor="#a09a8e"
+                multiline
+                value={letterContent}
+                onChangeText={setLetterContent}
+                textAlignVertical="top"
+              />
+
+              <View style={styles.stampArea}>
+                {stampImage ? (
+                  <GestureDetector gesture={panGesture}>
+                    <Animated.View style={[styles.stampWrapper, animatedStampStyle]}>
+                      <Image source={{ uri: stampImage }} style={styles.stampImage} />
+                    </Animated.View>
+                  </GestureDetector>
+                ) : (
+                  <TouchableOpacity onPress={pickImage} style={styles.stampPlaceholder}>
+                    <Text style={styles.stampText}>Dán tem</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+          </Animated.View>
+
+          <View style={styles.actionContainer}>
+            <TouchableOpacity onPress={handleSend} style={styles.waxSealButton}>
+              <Image source={require('../../assets/images/wax_seal.png')} style={styles.waxSealImage} />
+              <Text style={styles.waxSealText}>Gửi</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Animated.View style={[styles.incomingEnvelope, incomingEnvelopeStyle]}>
+            <Text style={styles.incomingText}>Bạn có thư mới! ✉️</Text>
+          </Animated.View>
+        </SafeAreaView>
+
+        <View pointerEvents="none" style={styles.noiseOverlay}>
+          <Image source={require('../../assets/images/noise.png')} style={styles.noiseImage} />
         </View>
-
-        <Animated.View style={[styles.incomingEnvelope, incomingEnvelopeStyle]}>
-          <Text style={styles.incomingText}>Bạn có thư mới! ✉️</Text>
-        </Animated.View>
-      </SafeAreaView>
+      </View>
     </GestureHandlerRootView>
   );
 }
@@ -340,95 +360,213 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FDFBF7',
+    backgroundColor: '#3e2723', // backup color
   },
   loginContainer: {
     flex: 1,
     justifyContent: 'center',
-    padding: 20,
+    padding: 30,
+  },
+  loginPaper: {
+    backgroundColor: '#FDFBF7',
+    margin: 20,
+    borderRadius: 8,
+    maxHeight: 400,
+    maxWidth: 500,
+    width: '100%',
+    alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.5,
+    shadowRadius: 15,
+    elevation: 10,
   },
   header: {
     padding: 20,
     alignItems: 'center',
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 32,
+    fontFamily: 'PlayfairDisplay_700Bold',
+    color: '#3e2723',
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontFamily: 'SpecialElite_400Regular',
+    fontSize: 16,
+    color: '#5d4037',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+    fontFamily: 'SpecialElite_400Regular',
+    borderBottomWidth: 1,
+    borderBottomColor: '#d7ccc8',
     padding: 10,
-    marginHorizontal: 20,
-    marginBottom: 10,
-    borderRadius: 5,
-    backgroundColor: '#fff',
+    marginBottom: 20,
+    fontSize: 16,
+    color: '#3e2723',
+  },
+  inputHeader: {
+    fontFamily: 'SpecialElite_400Regular',
+    borderBottomWidth: 2,
+    borderBottomColor: '#8d6e63',
+    padding: 15,
+    fontSize: 18,
+    color: '#3e2723',
   },
   letterContainer: {
     flex: 1,
     zIndex: 1,
+    backgroundColor: '#FDFBF7',
+    marginHorizontal: 20,
+    marginBottom: 20,
+    borderRadius: 4,
+    maxWidth: 600,
+    width: '100%',
+    alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 5, height: 15 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  paperBody: {
+    flex: 1,
+    position: 'relative',
   },
   letterInput: {
     flex: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-    marginHorizontal: 20,
-    padding: 10,
-    fontSize: 16,
-    lineHeight: 24,
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#eee',
-    borderRadius: 5,
+    padding: 20,
+    paddingTop: 30,
+    fontSize: 18,
+    lineHeight: 32,
+    fontFamily: 'SpecialElite_400Regular',
+    color: '#212121',
   },
-  stampContainer: {
-    alignItems: 'center',
-    marginVertical: 20,
+  stampArea: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
     zIndex: 10,
+  },
+  stampWrapper: {
+    padding: 4,
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: '#e0e0e0',
+    transform: [{ rotate: '4deg' }],
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  stampImage: {
+    width: 70,
+    height: 80,
+    resizeMode: 'cover',
   },
   stampPlaceholder: {
     width: 80,
-    height: 80,
-    borderWidth: 1,
+    height: 90,
+    borderWidth: 2,
     borderStyle: 'dashed',
-    borderColor: '#999',
+    borderColor: '#bcaaa4',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
+    backgroundColor: 'rgba(255,255,255,0.5)',
   },
   stampText: {
-    color: '#999',
-    fontSize: 12,
-  },
-  stampImage: {
-    width: 80,
-    height: 80,
-    marginBottom: 10,
+    fontFamily: 'SpecialElite_400Regular',
+    color: '#8d6e63',
+    fontSize: 14,
   },
   actionContainer: {
-    padding: 20,
+    padding: 10,
+    alignItems: 'center',
     zIndex: 0,
+  },
+  waxSealButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 8,
+  },
+  waxSealImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+  },
+  waxSealText: {
+    position: 'absolute',
+    fontFamily: 'PlayfairDisplay_700Bold',
+    color: '#fff',
+    fontSize: 20,
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+  },
+  vintageButton: {
+    backgroundColor: '#5d4037',
+    padding: 15,
+    borderRadius: 4,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  vintageButtonText: {
+    color: '#fff',
+    fontFamily: 'PlayfairDisplay_700Bold',
+    fontSize: 18,
+  },
+  vintageButtonOutline: {
+    borderWidth: 1,
+    borderColor: '#5d4037',
+    padding: 15,
+    borderRadius: 4,
+    alignItems: 'center',
+  },
+  vintageButtonOutlineText: {
+    color: '#5d4037',
+    fontFamily: 'PlayfairDisplay_700Bold',
+    fontSize: 18,
   },
   incomingEnvelope: {
     position: 'absolute',
     top: 50,
     alignSelf: 'center',
-    backgroundColor: '#FFF9C4',
-    padding: 30,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#D4E157',
+    backgroundColor: '#FDFBF7',
+    padding: 20,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#d7ccc8',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 10,
     zIndex: 100,
   },
   incomingText: {
+    fontFamily: 'SpecialElite_400Regular',
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    color: '#3e2723',
+  },
+  noiseOverlay: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    opacity: 0.08,
+    zIndex: 999,
+  },
+  noiseImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   }
 });
