@@ -51,7 +51,6 @@ export default function App() {
   const [readingLetter, setReadingLetter] = useState(null);
   const [isReadingFlapOpen, setIsReadingFlapOpen] = useState(false);
   const [waxSealState, setWaxSealState] = useState('intact'); // 'intact', 'broken'
-  const [sealDragStart, setSealDragStart] = useState(null);
   const [isLetterExpanded, setIsLetterExpanded] = useState(false);
 
   // Compose State
@@ -862,7 +861,6 @@ export default function App() {
     setReadingLetter(letter);
     setIsReadingFlapOpen(false);
     setWaxSealState('intact');
-    setSealDragStart(null);
     if (letter.receiverEmail === currentUser.email && !letter.isRead) {
       try { await updateDoc(doc(db, 'letters', letter.id), { isRead: true }); } catch (e) {}
     }
@@ -898,28 +896,13 @@ export default function App() {
     noiseSource.start();
   };
 
-  const handleSealTouchStart = (e) => {
+  const handleSealClick = () => {
     if (waxSealState === 'broken') return;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    setSealDragStart(clientX);
-  };
-
-  const handleSealTouchMove = (e) => {
-    if (waxSealState === 'broken' || sealDragStart === null) return;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const diff = Math.abs(clientX - sealDragStart);
-    if (diff > 40) {
-      setWaxSealState('broken');
-      playCrackSound();
-      setTimeout(() => {
-        setIsReadingFlapOpen(true);
-      }, 500);
-      setSealDragStart(null);
-    }
-  };
-
-  const handleSealTouchEnd = () => {
-    setSealDragStart(null);
+    setWaxSealState('broken');
+    playCrackSound();
+    setTimeout(() => {
+      setIsReadingFlapOpen(true);
+    }, 500);
   };
 
   const saveStampToAlbum = async (stampUrl, senderName) => {
@@ -1290,23 +1273,23 @@ export default function App() {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
 
-            {/* Fold Button */}
-            <AnimatePresence>
-              {isWriting && (
-                <motion.div initial={{opacity: 1}} exit={{opacity: 0}} style={{ marginTop: isMobile ? 20 : 30, zIndex: 10, alignSelf: 'center' }}>
-                  <button className="wax-seal-btn" onClick={handleFoldLetter}>
-                    <div className="wax-seal-circle">
-                      <div className="wax-seal-inner">
-                        <span className="wax-seal-symbol">⚜</span>
+              {/* Fold Button - Absolute inside envelope */}
+              <AnimatePresence>
+                {isWriting && (
+                  <motion.div initial={{opacity: 1}} exit={{opacity: 0}} style={{ position: 'absolute', bottom: isMobile ? 120 : 130, left: '50%', transform: 'translateX(-50%)', zIndex: 10 }}>
+                    <button className="wax-seal-btn" onClick={handleFoldLetter}>
+                      <div className="wax-seal-circle">
+                        <div className="wax-seal-inner">
+                          <span className="wax-seal-symbol">⚜</span>
+                        </div>
                       </div>
-                    </div>
-                    <span className="wax-seal-text">Gập thư</span>
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                      <span className="wax-seal-text">Gập thư</span>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
 
             {/* Form Area - Visible in Split state */}
             <AnimatePresence>
@@ -1560,13 +1543,7 @@ export default function App() {
                 <div 
                   className="crackable-seal-container"
                   style={{ opacity: waxSealState === 'broken' ? 0 : 1, transitionDelay: waxSealState === 'broken' ? '0.4s' : '0s' }}
-                  onMouseDown={handleSealTouchStart}
-                  onMouseMove={handleSealTouchMove}
-                  onMouseUp={handleSealTouchEnd}
-                  onMouseLeave={handleSealTouchEnd}
-                  onTouchStart={handleSealTouchStart}
-                  onTouchMove={handleSealTouchMove}
-                  onTouchEnd={handleSealTouchEnd}
+                  onClick={handleSealClick}
                 >
                   <div className={`crack-half crack-half-left ${waxSealState === 'broken' ? 'cracked-left' : ''}`}></div>
                   <div className={`crack-half crack-half-right ${waxSealState === 'broken' ? 'cracked-right' : ''}`}></div>
@@ -1579,7 +1556,7 @@ export default function App() {
               )}
               {!isReadingFlapOpen && (
                 <div style={{ position: 'absolute', top: '70%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10, color: '#fff', fontFamily: "'Playfair Display', serif", pointerEvents: 'none', textAlign: 'center', whiteSpace: 'nowrap' }}>
-                  <div style={{ fontSize: 14, opacity: 0.8 }}>Vuốt ngang con dấu sáp để bẻ</div>
+                  <div style={{ fontSize: 14, opacity: 0.8 }}>Nhấn vào con dấu sáp để bẻ</div>
                 </div>
               )}
             </div>
