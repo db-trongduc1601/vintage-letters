@@ -1053,7 +1053,6 @@ export default function App() {
     }
 
     const isTimeCapsule = !!letter.scheduledTimeMs;
-    const isLocked = isTimeCapsule && letter.scheduledTimeMs > now;
 
     if (isTimeCapsule && tabType === 'inbox') {
       return (
