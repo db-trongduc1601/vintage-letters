@@ -1406,36 +1406,17 @@ export default function App() {
 
   return (
     <div className="post-office-layout">
-      {/* SIDEBAR */}
-      <div className="sidebar">
-        <div className="sidebar-header">
-          <div className="sidebar-brand">
-            <Mail size={22} />
-            <h2>Bưu Điện</h2>
-          </div>
+      {/* TOP BAR */}
+      <div className="top-bar">
+        <div className="sidebar-brand">
+          <Mail size={22} />
+          <h2>Bưu Điện</h2>
+        </div>
+        <div className="top-bar-right">
           <div className="user-stamp">{displayName}</div>
           <button className="sign-out-btn" onClick={() => signOut(auth)}>
-            <LogOut size={14} /> Đăng xuất
+            <LogOut size={14} /> <span className="hide-on-mobile">Đăng xuất</span>
           </button>
-        </div>
-        
-        <div className="nav-menu">
-          <div className={`nav-item ${activeTab === 'compose' ? 'active' : ''}`} onClick={() => {setActiveTab('compose'); setComposeStep(1);}}>
-            <PenTool size={20} /> Viết thư
-          </div>
-          <div className={`nav-item ${activeTab === 'inbox' ? 'active' : ''}`} onClick={() => setActiveTab('inbox')}>
-            <Inbox size={20} /> Hộp thư đến
-            {unreadCount > 0 ? <span className="nav-badge new">{unreadCount}</span> : <span className="nav-badge">0</span>}
-          </div>
-          <div className={`nav-item ${activeTab === 'sent' ? 'active' : ''}`} onClick={() => setActiveTab('sent')}>
-            <Send size={20} /> Thư đã viết
-          </div>
-          <div className={`nav-item ${activeTab === 'album' ? 'active' : ''}`} onClick={() => setActiveTab('album')}>
-            <BookOpen size={20} /> Sổ sưu tập tem
-          </div>
-          <div className={`nav-item ${activeTab === 'trash' ? 'active' : ''}`} onClick={() => setActiveTab('trash')}>
-            <Trash2 size={20} /> Thùng rác
-          </div>
         </div>
       </div>
 
@@ -1516,6 +1497,31 @@ export default function App() {
             </div>
           </motion.div>
         )}
+      </div>
+
+      {/* BOTTOM NAV BAR (Glassmorphism) */}
+      <div className="bottom-nav-glass">
+        <div className="nav-menu">
+          <div className={`nav-item ${activeTab === 'compose' ? 'active' : ''}`} onClick={() => {setActiveTab('compose'); setComposeStep(1);}}>
+            <PenTool size={22} /> <span>Viết thư</span>
+          </div>
+          <div className={`nav-item ${activeTab === 'inbox' ? 'active' : ''}`} onClick={() => setActiveTab('inbox')}>
+            <div style={{position:'relative'}}>
+              <Inbox size={22} />
+              {unreadCount > 0 && <span className="nav-badge new">{unreadCount}</span>}
+            </div>
+            <span>Hộp thư</span>
+          </div>
+          <div className={`nav-item ${activeTab === 'sent' ? 'active' : ''}`} onClick={() => setActiveTab('sent')}>
+            <Send size={22} /> <span>Đã gửi</span>
+          </div>
+          <div className={`nav-item ${activeTab === 'album' ? 'active' : ''}`} onClick={() => setActiveTab('album')}>
+            <BookOpen size={22} /> <span>Sưu tập</span>
+          </div>
+          <div className={`nav-item ${activeTab === 'trash' ? 'active' : ''}`} onClick={() => setActiveTab('trash')}>
+            <Trash2 size={22} /> <span>Thùng rác</span>
+          </div>
+        </div>
       </div>
 
       {/* FULLSCREEN READER */}

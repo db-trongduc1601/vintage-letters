@@ -778,89 +778,156 @@
 /* Bưu Điện Layout */
 .post-office-layout {
   display: flex;
+  flex-direction: column;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
   background-color: transparent;
 }
 
-.sidebar {
-  width: 260px;
-  background: linear-gradient(180deg, #2e1d1a 0%, #1a0f0d 100%);
-  border-right: 1px solid rgba(93, 64, 55, 0.4);
+.top-bar {
   display: flex;
-  flex-direction: column;
-  padding: 24px 0;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: linear-gradient(180deg, rgba(46, 29, 26, 0.9) 0%, rgba(26, 15, 13, 0.8) 100%);
+  border-bottom: 1px solid rgba(93, 64, 55, 0.4);
+  backdrop-filter: blur(10px);
   z-index: 10;
-  box-shadow: 4px 0 25px rgba(0,0,0,0.6);
-}
-
-.sidebar-header {
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
   color: #fff;
-  text-align: center;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #5d4037;
-  margin-bottom: 20px;
 }
 
-.sidebar-header h2 {
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-brand h2 {
   font-family: 'Playfair Display', serif;
-  font-size: 24px;
-  margin: 0 0 5px 0;
+  font-size: 22px;
+  margin: 0;
 }
 
-.sidebar-header p {
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-stamp {
   font-family: 'Special Elite', monospace;
   font-size: 14px;
   color: #d7ccc8;
-  margin: 0;
+  padding: 4px 10px;
+  border: 1px dashed #d7ccc8;
+  border-radius: 4px;
+}
+
+.sign-out-btn {
+  background: transparent;
+  border: 1px solid #8d6e63;
+  color: #d7ccc8;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.sign-out-btn:hover {
+  background: rgba(141, 110, 99, 0.2);
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .top-bar {
+    padding: 10px 15px;
+  }
+  .hide-on-mobile {
+    display: none;
+  }
+}
+
+/* Bottom Glass Nav Bar */
+.bottom-nav-glass {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(40, 25, 22, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 40px;
+  padding: 8px 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+  z-index: 100;
+  width: 90%;
+  max-width: 600px;
 }
 
 .nav-menu {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 0 15px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .nav-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 15px;
-  padding: 12px 15px;
-  color: #d7ccc8;
+  gap: 4px;
+  padding: 8px 12px;
+  color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 20px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  font-size: 18px;
   font-family: 'Playfair Display', serif;
+  font-size: 12px;
   position: relative;
 }
 
+.nav-item span {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
 .nav-item:hover {
-  background-color: rgba(93, 64, 55, 0.4);
-  color: #fff;
-  transform: translateX(4px);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .nav-item.active {
-  background-color: #5d4037;
-  color: #fff;
-  font-weight: bold;
+  color: #e6c27a;
+  text-shadow: 0 0 10px rgba(230, 194, 122, 0.4);
+}
+
+.nav-item.active svg {
+  filter: drop-shadow(0 0 5px rgba(230, 194, 122, 0.5));
 }
 
 .nav-badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
   background-color: #8d6e63;
   color: #fff;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 14px;
-  margin-left: auto;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 10px;
   font-family: 'Special Elite', monospace;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
 }
 
 .nav-badge.new {
-  background-color: #db4437; /* Highlight red for new messages */
+  background-color: #db4437;
   font-weight: bold;
 }
 
@@ -870,6 +937,7 @@
   flex-direction: column;
   overflow-y: auto;
   position: relative;
+  padding-bottom: 90px;
 }
 
 /* COMPOSE VIEW */
