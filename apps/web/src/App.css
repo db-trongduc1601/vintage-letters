@@ -1835,5 +1835,49 @@
   transform: rotateX(40deg) translateY(-10px);
 }
 
+/* ===== MOBILE OPTIMIZATIONS ===== */
+@media (max-width: 600px) {
+  /* 1. Top Bar Scaling */
+  .sidebar-brand h2 {
+    font-size: 26px;
+  }
+  .user-stamp {
+    font-size: 16px;
+    padding: 6px 12px;
+  }
+
+  /* 2. Wider Paper & Envelope */
+  .app-container {
+    max-width: 95%; /* Was 600px */
+  }
+  .compose-step-1 {
+    padding: 20px 5px; /* less padding to give paper more room */
+  }
+  .letter-paper {
+    margin: 0 0 60px 0; /* less side margin, more bottom margin for seal */
+    width: 100%;
+    padding-bottom: 60px; /* Thêm khoảng thở ở dưới cùng tờ giấy để nút sáp không đè lên chữ */
+  }
+
+  /* 3. Bottom Nav Glass Scaling */
+  .bottom-nav-glass {
+    width: 95%;
+    padding: 12px 20px;
+    bottom: 15px;
+  }
+  .nav-item {
+    gap: 6px;
+  }
+  .nav-item svg {
+    width: 26px;
+    height: 26px;
+  }
+  .nav-item span {
+    font-size: 13px; /* make text bigger */
+    font-weight: bold;
+  }
+}
+
+
 
 
