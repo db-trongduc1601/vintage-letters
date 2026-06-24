@@ -999,8 +999,8 @@ export default function App() {
       <div className="container">
         <div className="login-paper">
           <div className="login-flourish">✦ ─── ✦</div>
-          <h1 className="title">Vintage Letters</h1>
-          <p className="login-tagline">Gửi những điều chân thật, theo cách cổ điển nhất</p>
+          <h1 className="title">Letters Tem</h1>
+          <p className="login-tagline">Thương như cách ngày còn những khoảng cách</p>
           <input className="input" placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           <input className="input" placeholder="Mật khẩu" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <button className="btn btn-login" style={{width: '100%'}} onClick={handleLogin}>Đăng nhập</button>
