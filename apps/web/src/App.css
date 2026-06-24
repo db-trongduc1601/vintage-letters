@@ -446,8 +446,9 @@
 
 .crackable-seal-container {
   position: absolute;
-  top: -35px;
-  left: -35px;
+  top: 54.5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 70px;
   height: 70px;
   z-index: 10;

@@ -194,10 +194,9 @@ export default function App() {
   }, [activeTab, composeStep]);
 
   useEffect(() => {
-    // Only auto-save during writing (step 1) or envelope labeling (step 2)
     if (composeStep !== 1 && composeStep !== 2) return;
-    
-    // If all fields are completely empty, we can clean up localStorage
+    if (hasDraftToRestore) return;
+
     if (!letterContent.trim() && !receiverEmail.trim() && !stampImage) {
       localStorage.removeItem('vintage_letter_draft_content');
       localStorage.removeItem('vintage_letter_draft_receiver');
@@ -215,21 +214,22 @@ export default function App() {
         localStorage.removeItem('vintage_letter_draft_stamp');
       }
       setSaveStatus('saved');
-      // Hide status after 2 seconds
       setTimeout(() => setSaveStatus(''), 2000);
-    }, 1500); // 1.5s debounce
+    }, 1500);
 
     return () => clearTimeout(timer);
-  }, [letterContent, receiverEmail, stampImage, composeStep]);
+  }, [letterContent, receiverEmail, stampImage, composeStep, hasDraftToRestore]);
 
   const handleRestoreDraft = () => {
     const draftContent = localStorage.getItem('vintage_letter_draft_content') || '';
     const draftReceiver = localStorage.getItem('vintage_letter_draft_receiver') || '';
     const draftStamp = localStorage.getItem('vintage_letter_draft_stamp') || null;
     
-    setLetterContent(draftContent);
-    setReceiverEmail(draftReceiver);
-    setStampImage(draftStamp);
+    if (draftContent || draftReceiver || draftStamp) {
+      setLetterContent(draftContent === 'null' ? '' : draftContent);
+      setReceiverEmail(draftReceiver === 'null' ? '' : draftReceiver);
+      setStampImage(draftStamp === 'null' ? null : draftStamp);
+    }
     setHasDraftToRestore(false);
   };
 
@@ -238,7 +238,10 @@ export default function App() {
     localStorage.removeItem('vintage_letter_draft_receiver');
     localStorage.removeItem('vintage_letter_draft_stamp');
     setHasDraftToRestore(false);
-    setTick(t => t + 1); // Trigger re-render to update Draft tab
+    setLetterContent('');
+    setReceiverEmail('');
+    setStampImage(null);
+    setTick(t => t + 1);
   };
 
   // Auth Handlers
@@ -1292,8 +1295,8 @@ export default function App() {
             {/* Fold Button */}
             <AnimatePresence>
               {isWriting && (
-                <motion.div initial={{opacity: 1}} exit={{opacity: 0}} style={{ position: 'absolute', bottom: 40, zIndex: 10 }}>
-                  <button className="wax-seal-btn" onClick={handleFoldLetter} style={{ marginTop: 20 }}>
+                <motion.div initial={{opacity: 1}} exit={{opacity: 0}} style={{ marginTop: isMobile ? 20 : 30, zIndex: 10, alignSelf: 'center' }}>
+                  <button className="wax-seal-btn" onClick={handleFoldLetter}>
                     <div className="wax-seal-circle">
                       <div className="wax-seal-inner">
                         <span className="wax-seal-symbol">⚜</span>
@@ -1552,31 +1555,30 @@ export default function App() {
                 className="receiver-env-flap"
                 animate={isReadingFlapOpen ? { rotateX: 180, zIndex: 0 } : { rotateX: 0, zIndex: 5 }}
                 transition={{ duration: 0.8 }}
-              >
-                {!isReadingFlapOpen && (
-                  <div 
-                    className="crackable-seal-container"
-                    style={{ opacity: waxSealState === 'broken' ? 0 : 1, transitionDelay: waxSealState === 'broken' ? '0.4s' : '0s' }}
-                    onMouseDown={handleSealTouchStart}
-                    onMouseMove={handleSealTouchMove}
-                    onMouseUp={handleSealTouchEnd}
-                    onMouseLeave={handleSealTouchEnd}
-                    onTouchStart={handleSealTouchStart}
-                    onTouchMove={handleSealTouchMove}
-                    onTouchEnd={handleSealTouchEnd}
-                  >
-                    <div className={`crack-half crack-half-left ${waxSealState === 'broken' ? 'cracked-left' : ''}`}></div>
-                    <div className={`crack-half crack-half-right ${waxSealState === 'broken' ? 'cracked-right' : ''}`}></div>
-                    {waxSealState !== 'broken' && (
-                      <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: '#d4af37', fontSize: 24, pointerEvents: 'none' }}>
-                        ⚜
-                      </div>
-                    )}
-                  </div>
-                )}
-              </motion.div>
+              />
               {!isReadingFlapOpen && (
-                <div style={{ position: 'absolute', top: '20%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10, color: '#fff', fontFamily: "'Playfair Display', serif", pointerEvents: 'none', textAlign: 'center' }}>
+                <div 
+                  className="crackable-seal-container"
+                  style={{ opacity: waxSealState === 'broken' ? 0 : 1, transitionDelay: waxSealState === 'broken' ? '0.4s' : '0s' }}
+                  onMouseDown={handleSealTouchStart}
+                  onMouseMove={handleSealTouchMove}
+                  onMouseUp={handleSealTouchEnd}
+                  onMouseLeave={handleSealTouchEnd}
+                  onTouchStart={handleSealTouchStart}
+                  onTouchMove={handleSealTouchMove}
+                  onTouchEnd={handleSealTouchEnd}
+                >
+                  <div className={`crack-half crack-half-left ${waxSealState === 'broken' ? 'cracked-left' : ''}`}></div>
+                  <div className={`crack-half crack-half-right ${waxSealState === 'broken' ? 'cracked-right' : ''}`}></div>
+                  {waxSealState !== 'broken' && (
+                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: '#d4af37', fontSize: 24, pointerEvents: 'none' }}>
+                      ⚜
+                    </div>
+                  )}
+                </div>
+              )}
+              {!isReadingFlapOpen && (
+                <div style={{ position: 'absolute', top: '70%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10, color: '#fff', fontFamily: "'Playfair Display', serif", pointerEvents: 'none', textAlign: 'center', whiteSpace: 'nowrap' }}>
                   <div style={{ fontSize: 14, opacity: 0.8 }}>Vuốt ngang con dấu sáp để bẻ</div>
                 </div>
               )}
