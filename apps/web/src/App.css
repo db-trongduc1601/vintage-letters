@@ -319,13 +319,13 @@
 .sender-env-wrapper {
   position: relative;
   width: 100%;
-  max-width: 600px;
+  max-width: 450px;
   margin: 0 auto;
-  min-height: 60vh;
+  min-height: 45vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 200px; /* Space for the bottom envelope */
+  padding-bottom: 150px; /* Space for the bottom envelope */
 }
 
 /* Paper */
@@ -340,7 +340,7 @@
     );
   background-position: 0 20px;
   width: 90%;
-  min-height: 400px;
+  min-height: 300px;
   border-radius: 4px;
   box-shadow: 0px -5px 15px rgba(0, 0, 0, 0.2);
   z-index: 2;
@@ -348,7 +348,7 @@
   display: flex;
   flex-direction: column;
   padding: 20px 20px 20px 58px;
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 .input-header {
@@ -380,7 +380,7 @@
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 250px;
+  height: 180px;
   background-color: #c8b39a;
   z-index: 1;
   border-top-left-radius: 10px;
@@ -391,7 +391,7 @@
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 250px;
+  height: 180px;
   z-index: 3;
   background-color: transparent;
   overflow: hidden;
@@ -405,11 +405,10 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 0;
-  height: 0;
-  border-left: 300px solid transparent; /* Half of 600px max-width */
-  border-right: 300px solid transparent;
-  border-bottom: 180px solid #e1ceb8;
+  width: 100%;
+  height: 100%;
+  background-color: #e1ceb8;
+  clip-path: polygon(0 100%, 50% 28%, 100% 100%);
   z-index: 4;
 }
 
@@ -420,21 +419,20 @@
   left: 0;
   width: 100%;
   height: 100%;
-  border-left: 300px solid #d4c0a8;
-  border-right: 300px solid #d4c0a8;
-  border-top: 150px solid transparent;
+  background-color: #d4c0a8;
+  clip-path: polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%);
 }
 
 .sender-env-flap {
   position: absolute;
-  bottom: 50px;
+  bottom: 30px;
   left: 0;
-  width: 0;
-  height: 0;
-  border-left: 300px solid transparent;
-  border-right: 300px solid transparent;
-  border-top: 200px solid #bca58d;
+  width: 100%;
+  height: 150px;
+  background-color: #bca58d;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
   transform-origin: top;
+  z-index: 5;
 }
 
 /* RECEIVER ENVELOPE (Interactive) */
@@ -500,10 +498,10 @@
 
 .receiver-env-paper {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 300px;
-  height: 200px;
+  top: 5%;
+  left: 3%;
+  width: 94%;
+  height: 90%;
   background: #FDFBF7;
   z-index: 2;
   padding: 20px;
@@ -518,10 +516,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  border-left: 160px solid #d4c0a8;
-  border-right: 160px solid #d4c0a8;
-  border-top: 110px solid transparent;
-  border-bottom: 110px solid transparent;
+  background-color: #d4c0a8;
+  clip-path: polygon(0 0, 50% 50%, 100% 0, 100% 100%, 0 100%);
   z-index: 3;
   pointer-events: none;
 }
@@ -530,11 +526,10 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 0;
-  height: 0;
-  border-left: 160px solid transparent;
-  border-right: 160px solid transparent;
-  border-bottom: 120px solid #e1ceb8;
+  width: 100%;
+  height: 100%;
+  background-color: #e1ceb8;
+  clip-path: polygon(0 100%, 50% 45.5%, 100% 100%);
   z-index: 4;
   pointer-events: none;
 }
@@ -543,11 +538,10 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 0;
-  height: 0;
-  border-left: 160px solid transparent;
-  border-right: 160px solid transparent;
-  border-top: 120px solid #bca58d;
+  width: 100%;
+  height: 54.5%;
+  background-color: #bca58d;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
   transform-origin: top;
   z-index: 5;
 }
@@ -1771,4 +1765,6 @@
 .time-capsule-chest.unlocked:hover .chest-lid.unlocked {
   transform: rotateX(40deg) translateY(-10px);
 }
+
+
 

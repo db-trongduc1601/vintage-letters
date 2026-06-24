@@ -84,6 +84,14 @@ export default function App() {
 
   const fileInputRef = useRef(null);
   const textareaRef = useRef(null);
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const mailboxRef = useRef(null);
   const envelopeRef = useRef(null);
   const composeContainerRef = useRef(null);
@@ -1145,24 +1153,13 @@ export default function App() {
             
             {/* The Envelope */}
               <motion.div 
+                layoutId="main-envelope"
                 ref={envelopeRef}
                 className="sender-env-wrapper"
-                initial={false}
                 animate={
-                  isSplit ? { scale: 0.5, top: 20, left: 20, x: 0, y: 0, position: 'absolute', zIndex: 20, opacity: 1, rotate: 0 } : 
-                  isFlying && flyTarget ? { 
-                    x: flyTarget.x, 
-                    y: flyTarget.y, 
-                    scale: 0.06, 
-                    rotate: -10, 
-                    opacity: 0, 
-                    position: 'absolute',
-                    top: 20,
-                    left: 20,
-                    zIndex: 20
-                  } : 
-                  isFlying ? { top: 20, left: 20, x: 300, y: 100, scale: 0.06, rotate: -10, opacity: 0, position: 'absolute', zIndex: 20 } :
-                  { scale: 1, top: 'auto', left: 'auto', x: 0, y: 0, position: 'relative', zIndex: 10, opacity: 1, rotate: 0 }
+                  isSplit ? (isMobile ? { scale: 0.5, x: 0, y: -50, position: 'relative', zIndex: 20 } : { scale: 0.35, x: -100, y: -150, position: 'absolute', zIndex: 20 }) : 
+                  isFlying ? (isMobile ? { x: 0, y: -200, scale: 0.1, rotate: 25, opacity: 0 } : { x: '40vw', y: -50, scale: 0.1, rotate: 25, opacity: 0 }) : 
+                  { scale: 1, x: 0, y: 0, position: 'relative', zIndex: 10 }
                 }
                 transition={{ duration: isFlying ? 1.0 : 1, ease: isFlying ? [0.45, 0, 0.15, 1] : "easeInOut" }}
                 style={{ transformOrigin: 'center center' }}
